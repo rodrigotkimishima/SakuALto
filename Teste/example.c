@@ -9,6 +9,7 @@ struct {
   int count;
   double coordx[100];
   double coordy[100];
+  Lista list;
 } glob;
 
 static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr, 
@@ -25,14 +26,27 @@ static void do_drawing(cairo_t *cr)
   cairo_set_line_width(cr, 0.5);
 
   int i, j;
-  for (i = 0; i <= glob.count - 1; i++ ) {
-      for (j = 0; j <= glob.count - 1; j++ ) {
-          cairo_move_to(cr, glob.coordx[i], glob.coordy[i]);
-          cairo_line_to(cr, glob.coordx[j], glob.coordy[j]);
-      }
-  }
+    Posic item;
+    Ponto ponto;
 
-  glob.count = 0;
+  for (i = 0; i <= glob.count - 1; i = i+2 ) {
+        if(i == 0){
+            item = getFirst(glob.list);
+        }
+        else{
+            if(item != NULL)
+                item = getNext(glob.list, item);
+        }
+        if(item != NULL){
+            ponto = getItem(glob.list, item);
+            cairo_move_to(cr, getPontoX(ponto), getPontoY(ponto));
+            item = getNext(glob.list, item);
+                    if(item != NULL){
+                    ponto = getItem(glob.list, item);
+                    cairo_line_to(cr, getPontoX(ponto), getPontoY(ponto));
+            }
+        }
+  }
   cairo_stroke(cr);    
 }
 
@@ -40,6 +54,8 @@ static gboolean clicked(GtkWidget *widget, GdkEventButton *event,
     gpointer user_data)
 {
     if (event->button == 1) {
+        Ponto ponto = createPonto(event->x, event->y);
+        ponto = insertLista(glob.list, ponto);
         glob.coordx[glob.count] = event->x;
         glob.coordy[glob.count++] = event->y;
     }
@@ -56,7 +72,9 @@ int main(int argc, char *argv[])
 {
   GtkWidget *window;
   GtkWidget *darea;
-  
+
+  glob.list = createLista();
+
   glob.count = 0;
 
   gtk_init(&argc, &argv);
