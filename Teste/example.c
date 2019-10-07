@@ -29,7 +29,7 @@ static gboolean on_draw_event(GtkWidget *widget, cairo_t *cr,
 
 static void do_drawing(cairo_t *cr)
 {
-  cairo_set_source_rgb(cr, 0, 0, 0);
+  cairo_set_source_rgb(cr, 255, 0, 0);
   cairo_set_line_width(cr, 0.5);
 
   int i, j;
@@ -67,7 +67,7 @@ static gboolean clicked(GtkWidget *widget, GdkEventButton *event,
         glob.coordy[glob.count++] = event->y;
     }
 
-    if (event->button == 3) {
+    if (event->button == 1) {
         gtk_widget_queue_draw(widget);
     }
 
